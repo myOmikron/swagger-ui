@@ -1,8 +1,9 @@
 use std::borrow::Cow;
-use rust_embed::RustEmbed;
-use serde::{Deserialize, Serialize};
 
 pub use bytes::Bytes;
+use rust_embed::RustEmbed;
+use serde::Deserialize;
+use serde::Serialize;
 
 /// Assets from swagger-ui-dist
 #[derive(RustEmbed)]
@@ -66,14 +67,14 @@ pub struct Spec {
     /// Spec file name
     pub name: Cow<'static, str>,
     /// Spec file content
-    pub content: Bytes
+    pub content: Bytes,
 }
 
 /// Helper type to accept both provided or existing spec
 #[derive(Debug, Clone)]
 pub enum SpecOrUrl {
     Spec(Spec),
-    Url(Cow<'static, str>)
+    Url(Cow<'static, str>),
 }
 
 impl From<Spec> for SpecOrUrl {
@@ -101,7 +102,7 @@ macro_rules! swagger_spec_file {
     ($name: literal) => {
         $crate::Spec {
             name: std::borrow::Cow::Borrowed(($name).split("/").last().unwrap()),
-            content: $crate::Bytes::from_static(include_bytes!($name))
+            content: $crate::Bytes::from_static(include_bytes!($name)),
         }
     };
 }
@@ -189,7 +190,6 @@ impl Default for Config {
 
 #[cfg(test)]
 mod tests {
-    use std::path::Path;
     use crate::Assets;
 
     fn asset_list() -> [&'static str; 8] {
@@ -211,7 +211,7 @@ mod tests {
         for asset in &asset_list() {
             println!("\t{}", asset);
             let data = Assets::get(&asset).unwrap();
-            assert!(!data.is_empty());
+            assert!(!data.data.is_empty());
         }
     }
 
